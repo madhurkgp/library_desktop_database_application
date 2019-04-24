@@ -1,6 +1,24 @@
 from tkinter import *
 import backend
 
+def get_selected_row(event):
+    try:
+        global selected_tuple
+        index = listbox.curselection()[0]
+        selected_tuple = listbox.get(index)
+        title_entry.delete(0,END)
+        title_entry.insert(END, selected_tuple[1])
+        author_entry.delete(0, END)
+        author_entry.insert(END, selected_tuple[2])
+        year_entry.delete(0, END)
+        year_entry.insert(END, selected_tuple[3])
+        isbn_entry.delete(0, END)
+        isbn_entry.insert(END, selected_tuple[4])
+    except Exception as e:
+        pass
+    # title, author, year, isbn
+    # print(selected_tuple)
+    return selected_tuple
 def view_command():
     listbox.delete(0,END)
     for row in backend.view():
@@ -12,17 +30,34 @@ def search_command():
         listbox.insert(END,row)
 
 def add_command():
-    backend.insert(title_text.get(),author_text.get(), year_text.get(),isbn_text.get())
-    listbox.delete(0,END)
-    listbox.insert(0,(title_text.get(),author_text.get(), year_text.get(),isbn_text.get()))
+    try:
+        if(len(title_text.get())>0 & len(author_text.get())>0 &  len(year_text.get())>0 & len(isbn_text.get())>0):
+            backend.insert(title_text.get(),author_text.get(), year_text.get(),isbn_text.get())
+            listbox.delete(0,END)
+            listbox.insert(0,(title_text.get(),author_text.get(), year_text.get(),isbn_text.get()))
+        else:
+            raise Exception()
+    except Exception as e:
+        pass
+
 
 def update_command():
-    backend.update()
+    try:# id, title, author, year, isbn
+        backend.update(selected_tuple[0],title_text.get(),author_text.get(), year_text.get(),isbn_text.get())
+    # print(selected_tuple[0],title_text.get(),author_text.get(), year_text.get(),isbn_text.get())
+    # listbox.delete(0, END)
+    # listbox.insert(0, (title_text.get(), author_text.get(), year_text.get(), isbn_text.get()))
+    except Exception as e:
+        pass
+
 def delete_command():
-    pass
-def close_command():
-    pass
+    try:
+        backend.delete(selected_tuple[0])
+    except Exception as e:
+        pass
+
 window = Tk()
+window.wm_title('BOOKSTORE')
 # -----------------------------------------
 label_Title = Label(text='Title')
 label_Year = Label(text='Year')
@@ -48,14 +83,22 @@ title_entry.grid(row=0,column=1,pady=2)
 year_entry.grid(row=1,column=1,pady=2)
 author_entry.grid(row=0,column=5,pady=2)
 isbn_entry.grid(row=1,column=5,pady=2)
+# -----------------------------------------
+listbox = Listbox(window,height=12,width=35)
+listbox.grid(row=2,column=0,rowspan=8,columnspan=2,pady=2)
+listbox.bind('<<ListboxSelect>>',get_selected_row)
+sb1  = Scrollbar(window)
+sb1.grid(row=2,column=3,rowspan=6)
 
+listbox.configure(yscrollcommand=sb1.set)
+sb1.configure(command=listbox.yview)
 # -----------------------------------------
 viewall_button = Button(window,text='View All',justify='right', width=12, command=view_command)
 search_button = Button(window,text='Search Entry',justify='right', width=12, command=search_command)
 add_button = Button(window,text='Add Entry',justify='right', width=12, command=add_command)
 update_button = Button(window,text='Update Entry',justify='right', width=12, command=update_command)
 delete_button= Button(window,text='Delete Entry',justify='right', width=12, command=delete_command)
-close_button = Button(window,text='Close',justify='right', width=12, command=close_command)
+close_button = Button(window,text='Close',justify='right', width=12, command=window.destroy)
 
 viewall_button.grid(row=2,column=5,pady=2)
 search_button.grid(row=3,column=5,pady=2)
@@ -64,18 +107,6 @@ update_button.grid(row=5,column=5,pady=2)
 delete_button.grid(row=6,column=5,pady=2)
 close_button.grid(row=7,column=5,pady=2)
 
-listbox = Listbox(window,height=12,width=35)
-listbox.grid(row=2,column=0,rowspan=8,columnspan=2,pady=2)
 
-sb1  = Scrollbar(window)
-sb1.grid(row=2,column=3,rowspan=6)
 
-listbox.configure(yscrollcommand=sb1.set)
-sb1.configure(command=listbox.yview)
-# viewall_button.pack(side = 'left')
-# search_button.pack(side = 'left')
-# add_button.pack(side = 'left')
-# update_button.pack(side = 'left')
-# delete_button.pack(side = 'left')
-# close_button.pack(side = 'left')
 window.mainloop()

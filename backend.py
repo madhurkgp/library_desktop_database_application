@@ -4,7 +4,7 @@ import sqlite3
 def connect():
     conn = sqlite3.connect('books.db')
     curr = conn.cursor()
-    curr.execute("CREATE TABLE IF NOT EXISTS books (id INTEGER PRIMARY KEY, title text,author text, year interger, isbn integer)")
+    curr.execute("CREATE TABLE IF NOT EXISTS books (id INTEGER PRIMARY KEY, title text,author text, year integer, isbn integer)")
     conn.commit()
     conn.close()
 
@@ -41,7 +41,9 @@ def delete(id):
 def update(id,title,author,year,isbn):
     conn = sqlite3.connect('books.db')
     curr = conn.cursor()
-    curr.execute('UPDATE BOOKs SET TITLE=?,AUTHOR=?,YEAR=?,ISBN=? WHERE ID=?',(title,author,year,isbn,id))
+    curr.execute('UPDATE BOOKS SET TITLE=?,AUTHOR=?,YEAR=?,ISBN=? WHERE ID=?',(title,author,year,isbn,id))
+    conn.commit()
+    conn.close()
 
 #     ---------------------------
 connect()
@@ -49,8 +51,8 @@ connect()
 # insert("godan","munshi premchand",1934,1978112)
 # insert("game of thrones","amit",2015,1978113)
 # insert("da vinci code","leonardo da vinci",1638,1978114)
-# print(view())
+# print(view(),end='\n')
 # print(search(author='munshi premchand'))
 # delete(1978112)
 # update(1,'the man who sold his fiat', 'amit kumar', 2015, 1978110)
-# print(view())
+# print(view(),end='\n')
