@@ -31,11 +31,15 @@ def search_command():
 
 def add_command():
     try:
-        if(len(title_text.get())>0 & len(author_text.get())>0 &  len(year_text.get())>0 & len(isbn_text.get())>0):
+        if(len(title_text.get())>0 and len(author_text.get())>0 and  len(year_text.get())>0 and len(isbn_text.get())>0):
+
+            # print('yes')
             backend.insert(title_text.get(),author_text.get(), year_text.get(),isbn_text.get())
             listbox.delete(0,END)
             listbox.insert(0,(title_text.get(),author_text.get(), year_text.get(),isbn_text.get()))
         else:
+            # print(len(title_text.get())>0 , len(author_text.get())>0 ,  len(year_text.get())>0 , len(isbn_text.get())
+            # print('no')
             raise Exception()
     except Exception as e:
         pass
